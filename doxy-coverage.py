@@ -149,7 +149,12 @@ def report (files):
 		total_yes += doc_yes
 		total_no  += doc_no
 
-		print ('%3d%% - %s - (%d of %d)'%(doc_per, f, doc_yes, (doc_yes + doc_no)))
+		if ns.relative:
+			file_path = os.path.join(os.path.relpath(os.path.dirname(f), os.path.realpath(os.path.curdir)), os.path.basename(f))
+		else:
+			file_path = f
+
+		print ('%3d%% - %s - (%d of %d)'%(doc_per, file_path, doc_yes, (doc_yes + doc_no)))
 
 		defs_sorted = defs.keys()
 		defs_sorted.sort()
@@ -170,6 +175,7 @@ def main():
 	parser.add_argument ("dir",         action="store",      help="Path to Doxygen's XML doc directory")
 	parser.add_argument ("--noerror",   action="store_true", help="Do not return error code after execution")
 	parser.add_argument ("--threshold", action="store",      help="Min acceptable coverage percentage (Default: %s)"%(ACCEPTABLE_COVERAGE), default=ACCEPTABLE_COVERAGE, type=int)
+	parser.add_argument ("--relative",  action="store_true", help="Use relative path for output")
 
 	global ns
 	ns = parser.parse_args()
