@@ -150,7 +150,11 @@ def report (files):
 		total_no  += doc_no
 
 		if ns.relative:
-			file_path = os.path.join(os.path.relpath(os.path.dirname(f), os.path.realpath(os.path.curdir)), os.path.basename(f))
+			if os.path.exists(ns.relative):
+				relative_path = ns.relative
+			else:
+				relative_path = os.path.curdir
+			file_path = os.path.join(os.path.relpath(os.path.dirname(f), os.path.realpath(relative_path)), os.path.basename(f))
 		else:
 			file_path = f
 
@@ -175,7 +179,8 @@ def main():
 	parser.add_argument ("dir",         action="store",      help="Path to Doxygen's XML doc directory")
 	parser.add_argument ("--noerror",   action="store_true", help="Do not return error code after execution")
 	parser.add_argument ("--threshold", action="store",      help="Min acceptable coverage percentage (Default: %s)"%(ACCEPTABLE_COVERAGE), default=ACCEPTABLE_COVERAGE, type=int)
-	parser.add_argument ("--relative",  action="store_true", help="Use relative path for output")
+	parser.add_argument ("--relative",  nargs="?", action="store", help="Use relative path for output (Default: %s)"%(os.path.curdir), const=os.path.curdir)
+
 
 	global ns
 	ns = parser.parse_args()
@@ -184,6 +189,7 @@ def main():
 
 	# Parse
 	files = parse (ns.dir)
+
 
 	# Print report
 	err = report (files)
