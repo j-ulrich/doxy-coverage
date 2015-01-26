@@ -190,7 +190,6 @@ def main():
 	# Parse
 	files = parse (ns.dir)
 
-
 	# Print report
 	err = report (files)
 	if ns.noerror:
